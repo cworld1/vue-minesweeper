@@ -10,13 +10,16 @@ interface BlockState {
   flagged?: boolean; // is flagged
 }
 
-const WIDTH = 10;
-const HEIGHT = 10;
-const mineExpect = 0.1;
-const dev = false;
+const WIDTH = 13;
+const HEIGHT = 13;
+const mineExpect = 0.2;
+let dev = false;
 
 // Initial & reactive state
-const state = reactive<BlockState[][]>(
+// `reactive` do not support edit or reinitialize after created
+// So we use `ref` instead
+// const state = reactive<BlockState[][]>(
+const state = ref<BlockState[][]>(
   Array.from({ length: HEIGHT }, (_, y) =>
     Array.from(
       { length: WIDTH },
@@ -32,14 +35,14 @@ const state = reactive<BlockState[][]>(
 
 // Generate mines data
 function generateMines(initial: BlockState) {
-  if (!mineGenerated) return;
-  for (const row of state) {
-    for (const block of row) {
-      if (Math.abs(initial.x - block.x) <= 1) continue;
-      if (Math.abs(initial.y - block.y) <= 1) continue;
+  initial.mine = false;
+  getSibilings(initial).forEach((s) => (s.mine = false));
+
+  state.value.flat().forEach((block) => {
+    if (block.mine == undefined) {
       block.mine = Math.random() < mineExpect;
     }
-  }
+  });
   updateNumbers();
 }
 
@@ -60,17 +63,15 @@ function getSibilings(block: BlockState) {
       const x2 = block.x + dx;
       const y2 = block.y + dy;
       if (x2 < 0 || x2 >= WIDTH || y2 < 0 || y2 >= HEIGHT) return undefined;
-      return state[y2][x2];
+      return state.value[y2][x2];
     })
     .filter(Boolean) as BlockState[]; // filter item that equals undefined
 }
 function updateNumbers() {
-  state.forEach((row) => {
-    row.forEach((block) => {
-      if (block.mine) return;
-      getSibilings(block).forEach((s) => {
-        if (s.mine) block.adjacentMines += 1;
-      });
+  state.value.flat().forEach((block) => {
+    if (block.mine) return;
+    getSibilings(block).forEach((s) => {
+      if (s.mine) block.adjacentMines += 1;
     });
   });
 }
@@ -106,7 +107,11 @@ function onClick(block: BlockState) {
 
   if (block.flagged) return;
   block.revealed = true;
-  if (block.mine) alert("BOOOOM!");
+  if (block.mine) {
+    alert("BOOOOM!");
+    dev = true;
+    return;
+  }
   expandZero(block);
   checkGameState();
 }
@@ -127,14 +132,16 @@ function expandZero(block: BlockState) {
   });
 }
 function checkGameState() {
-  const blocks = state.flat();
+  if (!mineGenerated) return;
   if (
-    blocks.every(
-      (block) =>
-        block.revealed ||
-        (block.flagged && block.mine) ||
-        (!block.revealed && block.mine),
-    )
+    state.value
+      .flat()
+      .every(
+        (block) =>
+          block.revealed ||
+          (block.flagged && block.mine) ||
+          (!block.revealed && block.mine),
+      )
   ) {
     alert("You win!");
   }

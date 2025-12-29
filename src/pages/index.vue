@@ -33,4 +33,11 @@ const state = play.state;
       </div>
     </div>
   </div>
+
+  <div flex="~ gap-1" justify-center items-center>
+    <button btn @click="toggleDev()">
+      {{ isDev ? "DEV" : "NORMAL" }}
+    </button>
+    <button btn @click="play.resetGame()">REST</button>
+  </div>
 </template>

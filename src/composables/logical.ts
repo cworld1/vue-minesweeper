@@ -58,14 +58,14 @@ export class GamePlay {
     this.expandZero(block);
     // After set state hook, the function will automatically run
     // and no need to load it manually
-    // checkGameState();
+    // this.checkGameState();
   }
   public onRightClick(block: BlockState) {
     if (this.state.value.gameState !== 'play' || !this.state.value.mineGenerated)
       return;
     if (block.revealed) return;
     block.flagged = !block.flagged;
-    // checkGameState();
+    // this.checkGameState();
   }
 
   public resetGame() {
@@ -87,6 +87,8 @@ export class GamePlay {
   // Check if the game is successful
   public checkGameState() {
     if (!this.state.value.mineGenerated) return;
+    if (this.state.value.gameState === 'lost')
+      alert('BOOOM!')
     if (
       this.board.flat().every(
         (block) =>
@@ -97,6 +99,7 @@ export class GamePlay {
     ) {
       this.state.value.gameState = 'won'
       this.showAllMines()
+      alert('You won!')
     }
   }
 

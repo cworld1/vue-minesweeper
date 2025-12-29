@@ -1,14 +1,5 @@
 <script setup lang="ts">
-import { reactive } from "vue";
-
-interface BlockState {
-  x: number;
-  y: number;
-  revealed: boolean; // is revealed
-  adjacentMines: number; // number of mines that adjacent
-  mine?: boolean; // is mine
-  flagged?: boolean; // is flagged
-}
+import { BlockState } from "~/types";
 
 const WIDTH = 13;
 const HEIGHT = 13;

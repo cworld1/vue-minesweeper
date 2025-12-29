@@ -20,6 +20,7 @@ export default defineConfig({
     // https://github.com/posva/unplugin-vue-router
     VueRouter(),
 
+    // @ts-expect-error these code are generated from template
     VueMacros({
       defineOptions: false,
       defineModels: false,

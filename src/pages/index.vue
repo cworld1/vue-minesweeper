@@ -4,8 +4,6 @@ import { BlockState } from "~/types";
 const WIDTH = 13;
 const HEIGHT = 13;
 const mineExpect = 0.2;
-let dev = false;
-
 // Initial & reactive state
 // `reactive` do not support edit or reinitialize after created
 // So we use `ref` instead
@@ -151,27 +149,14 @@ function checkGameState() {
         items-center
         justify-center
       >
-        <button
+        <MineBlock
           v-for="(block, x) in row"
           :key="x"
-          flex="~"
-          items-center
-          justify-center
-          w-10
-          h-10
-          border="1 gray-400/20"
-          :class="getBlockClass(block)"
-          @click="onClick(block)"
-          @contextmenu.prevent="onRightClick(block)"
+          :block="block"
+          @click="play.onClick(block)"
+          @contextmenu.prevent="play.onRightClick(block)"
         >
-          <template v-if="block.flagged">
-            <div i-mdi-flag text-red />
-          </template>
-          <template v-else-if="block.revealed || dev">
-            <div v-if="block.mine" i-mdi-mine />
-            <div v-else>{{ block.adjacentMines }}</div>
-          </template>
-        </button>
+        </MineBlock>
       </div>
     </div>
   </div>

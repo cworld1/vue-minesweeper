@@ -23,7 +23,7 @@ export class GamePlay {
   // `reactive` do not support edit or reinitialize after created
   // So we use `ref` instead
   // const state = reactive<BlockState[][]>(
-  private state = ref<GameState>({
+  public state = ref<GameState>({
     board: [], mineGenerated: false, gameState: 'play'
   }) as Ref<GameState>
 
@@ -37,11 +37,8 @@ export class GamePlay {
   }
 
   // [Public method]
-  get board() {
+  public get board() {
     return this.state.value.board
-  }
-  set board(b: BlockState[][]) {
-    this.state.value.board = b
   }
   public onClick(block: BlockState) {
     if (this.state.value.gameState !== 'play' || block.flagged) return
@@ -104,6 +101,9 @@ export class GamePlay {
   }
 
   // [Utils]
+  private set board(b: BlockState[][]) {
+    this.state.value.board = b
+  }
   // Returns siblings all around the specific block
   private getSibilings(block: BlockState) {
     return directions

@@ -7,6 +7,8 @@ const HEIGHT = 13;
 const mineExpect = 0.2;
 
 const play = new GamePlay(WIDTH, HEIGHT, mineExpect);
+// Persist storage of states
+useStorage("vue-sweeper-state", play.state);
 // `computed()` will create a ref attribute,
 // which can extend the update of parents
 const board = computed(() => play.board);

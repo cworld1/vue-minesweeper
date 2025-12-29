@@ -7,7 +7,9 @@ const HEIGHT = 13;
 const mineExpect = 0.2;
 
 const play = new GamePlay(WIDTH, HEIGHT, mineExpect);
-const state = play.state;
+// `computed()` will create a ref attribute,
+// which can extend the update of parents
+const board = computed(() => play.board);
 </script>
 
 <template>
@@ -16,7 +18,7 @@ const state = play.state;
 
     <div p5>
       <div
-        v-for="(row, y) in state"
+        v-for="(row, y) in board"
         :key="y"
         flex="~"
         items-center
